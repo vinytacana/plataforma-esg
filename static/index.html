@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Sustentabilidade Corporativa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* --- Variáveis de Estilo (PADRÃO MARROM/BEGE) --- */
+        :root {
+            /* Marrom Escuro / Quase Preto */
+            --color-brown-dark: #584033;     
+            /* Marrom Médio / Terra (Destaque) */
+            --color-brown-medium: #8D6E5D;   
+            /* Bege Claro / Areia (Fundo Principal) */
+            --color-brown-light: #F4EDE8;    
+            
+            --color-text-dark: var(--color-brown-dark);
+            /* Cinza-Marrom */
+            --color-text-light: #9C8C83;     
+            --color-white: #FFFFFF;          
+            --font-primary: 'Poppins', sans-serif;
+            
+            /* Cor de destaque para hover */
+            --color-hover-light: #A38271; 
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: var(--font-primary);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-white); 
+            min-height: 100vh;
+            color: var(--color-text-dark);
+        }
+
+        /* --- Estilo do Cabeçalho e Navegação Principal --- */
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 70px; 
+            background-color: var(--color-white);
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo a img { height: 35px; vertical-align: middle; }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px; 
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-text-dark);
+            font-weight: 600;
+            font-size: 16px;
+            padding: 5px 0;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--color-brown-medium);
+        }
+
+        /* --- ESTILOS DO BOTÃO PRINCIPAL (Acessar Plataforma - HEADER) --- */
+        .access-button-header { 
+            display: inline-block; 
+            text-decoration: none; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            background-color: var(--color-brown-dark); 
+            color: var(--color-white) !important; /* Corrigido: Força a cor branca */
+            margin-left: 20px;
+        }
+        .access-button-header:hover { 
+            background-color: #6a5345; 
+            transform: translateY(-1px); 
+        }
+
+        /* Oculta o menu de hamburguer na versão desktop */
+        .menu-icon { display: none; }
+        .sidebar-menu { display: none; }
+        
+        /* --- SEÇÃO HERO --- */
+        .hero-section {
+            background-image: url("img/casca_site.jpg");
+            /* 2. Propriedades para cobrir e centralizar a imagem */
+            background-size: cover; 
+            background-position: center center;
+            background-repeat: no-repeat;
+    /* (Opcional) Fixa a imagem para efeito paralaxe */
+    background-attachment: fixed;
+
+            background-color: var(--color-brown-light); 
+            padding: 120px 70px; /* Aumentei o padding vertical */
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 64px; /* Levemente maior */
+            font-weight: 800;
+            color: var(--color-brown-light);
+            margin-bottom: 20px; 
+            line-height: 1.1;
+        }
+        .hero-section p {
+            font-size: 24px; /* Levemente maior */
+            color: var(--color-brown-light);
+            max-width: 900px; 
+            margin: 0 auto 50px; 
+            line-height: 1.5;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: var(--color-brown-medium); 
+            color: var(--color-white);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-primary:hover {
+            background-color: var(--color-hover-light); 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* --- ESTILOS DE CONTEÚDO --- */
+        .content-section {
+            padding: 100px 70px; /* Aumentei o padding vertical */
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .content-section h2 {
+            font-size: 48px; /* Maior e mais impactante */
+            font-weight: 800;
+            color: var(--color-brown-dark);
+            margin-bottom: 70px; /* Mais espaço para o grid */
+        }
+        
+        /* FEATURE GRID (Por que Casca?) - Estilo de Card Aprimorado */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px; /* Espaçamento menor e mais elegante */
+            text-align: center; /* Centralizando o conteúdo do card */
+        }
+
+        .feature-card {
+            padding: 40px 30px; /* Padding maior */
+            border-radius: 15px; /* Bordas mais suaves */
+            background-color: var(--color-brown-light); /* Cor de fundo do Bege */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px); /* Efeito 3D mais pronunciado */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card .material-icons {
+            font-size: 55px; /* Ícone maior */
+            color: var(--color-brown-medium);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--color-brown-dark);
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            font-size: 16px;
+            color: var(--color-text-dark); /* Texto ligeiramente mais escuro para melhor leitura */
+            line-height: 1.6;
+        }
+
+        /* Seção de Processo */
+        .process-section {
+            background-color: var(--color-white);
+            padding: 100px 70px;
+            text-align: center;
+        }
+
+        .process-section h2 {
+             color: var(--color-brown-dark);
+             margin-bottom: 60px;
+        }
+
+        .process-steps {
+            display: flex;
+            justify-content: center;
+            gap: 40px; /* Aumentei o espaçamento */
+            position: relative;
+        }
+        
+        /* Linha divisória (opcional, mas adiciona fluxo) */
+        .process-steps::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 2px;
+            background-color: var(--color-brown-light);
+            z-index: 0;
+            display: none; /* Desabilitado para manter a simplicidade do layout de colunas */
+        }
+
+        .step {
+            width: 300px; /* Maior largura */
+            text-align: center;
+            position: relative;
+            padding: 15px;
+        }
+
+        .step-number {
+            display: inline-flex;
+            width: 60px; /* Maior */
+            height: 60px; /* Maior */
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background-color: var(--color-brown-medium);
+            color: var(--color-white);
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 25px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .step h3 {
+            color: var(--color-brown-dark);
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .step p {
+            color: var(--color-text-light);
+        }
+
+        /* Seção de CTA Final */
+        .cta-section {
+            background-color: var(--color-brown-dark);
+            padding: 100px 70px; /* Aumentei o padding vertical */
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            color: var(--color-white);
+            font-size: 48px;
+            margin-bottom: 25px;
+        }
+
+        .cta-section p {
+            color: var(--color-brown-light);
+            font-size: 22px;
+            margin-bottom: 50px;
+        }
+        
+        /* --- Responsividade --- */
+        @media (max-width: 1100px) {
+            .hero-section h1 { font-size: 50px; }
+            .content-section h2 { font-size: 40px; }
+            .feature-grid { grid-template-columns: repeat(2, 1fr); }
+            .process-steps { flex-wrap: wrap; }
+            .step { width: 45%; }
+        }
+
+        @media (max-width: 900px) {
+            .header-main { padding: 20px 20px; }
+            .nav-links { display: none; } 
+            
+            .access-button-header { display: none; } 
+            
+            .menu-icon { display: block; }
+            .sidebar-menu { display: flex; }
+            
+            /* Botão de Acesso Padrão na Sidebar (Mobile) */
+            .sidebar-menu .access-button { 
+                 display: block; 
+                 text-decoration: none; 
+                 padding: 15px 30px; 
+                 border: none; 
+                 border-radius: 8px; 
+                 font-size: 16px; 
+                 font-weight: 600; 
+                 cursor: pointer; 
+                 background-color: var(--color-brown-dark); 
+                 color: var(--color-white) !important; 
+                 width: 100%; margin-top: auto; 
+            }
+
+            .hero-section { padding: 80px 20px; }
+            .hero-section h1 { font-size: 38px; }
+            .hero-section p { font-size: 18px; }
+
+            .content-section { padding: 50px 20px; }
+            .content-section h2 { font-size: 30px; margin-bottom: 30px; }
+            .feature-grid {
+                grid-template-columns: 1fr; 
+                gap: 25px;
+            }
+            .process-steps {
+                flex-direction: column; 
+                gap: 30px;
+            }
+            .step {
+                width: 100%;
+            }
+            .cta-section { padding: 50px 20px; }
+            .cta-section h2 { font-size: 34px; }
+            .cta-section p { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-main">
+        <div class="logo">
+            <a href="index.html">
+                <img src="casca2.png" alt="Logo da Casca">
+            </a>
+        </div>
+        
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="solucoes.html">Soluções</a>
+            <a href="metodologia.html">Metodologia ESG</a>
+            <a href="contato-e-suporte.html">Contato e Suporte</a>
+            
+            <a href="painel-esg-abc.html" class="access-button-header">
+                Acessar Plataforma
+            </a>
+        </div>
+        
+        <div id="menu-icon-main" class="menu-icon">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </header>
+
+    <nav id="sidebar-menu" class="sidebar-menu">
+        <ul class="menu-list">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="solucoes.html">Soluções</a></li>
+            <li><a href="metodologia.html">Metodologia ESG</a></li>
+            <li><a href="contato-e-suporte.html">Contato e Suporte</a></li> 
+        </ul>
+        <a href="painel-esg-abc.html" class="access-button">
+            Acessar Plataforma
+        </a>
+    </nav>
+    
+    <section class="hero-section">
+        <h1>O Futuro da Sustentabilidade Corporativa</h1>
+        <p>Valide e rastreie suas métricas ESG com segurança, transparência e tecnologia blockchain. Transforme a conformidade em vantagem competitiva.</p>
+        <a href="solucoes.html" class="btn-primary">Descubra Nossas Soluções</a>
+    </section>
+
+    <section class="content-section">
+        <h2>Por que escolher a Casca?</h2>
+        <div class="feature-grid">
+            
+            <div class="feature-card">
+                <span class="material-icons">security</span>
+                <h3>Blockchain para Confiança</h3>
+                <p>Garanta a imutabilidade dos seus dados ESG. Cada registro é auditável e transparente, eliminando o risco de *greenwashing*.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="material-icons">analytics</span>
+                <h3>Auditoria Contínua</h3>
+                <p>Nossa inteligência artificial monitora métricas em tempo real, fornecendo relatórios padronizados (GRI, SASB) e alertas de não-conformidade.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="material-icons">trending_up</span>
+                <h3>Vantagem Competitiva</h3>
+                <p>Transforme relatórios em inteligência de negócios. Melhore o rating de crédito e atraia investidores focados em impacto real e verificado.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="process-section">
+        <h2>Nosso Processo de Validação</h2>
+        <div class="process-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Integração de Dados</h3>
+                <p>Conectamos suas fontes de dados. Nossa IA padroniza e organiza as informações conforme os frameworks ESG globais.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Verificação Blockchain</h3>
+                <p>Os dados validados são registrados na nossa rede privada. Isso garante a integridade, rastreabilidade e a data exata do registro.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Relatórios e Certificação</h3>
+                <p>Gere relatórios complexos com um clique. Receba o selo Casca de Integridade Verificada para seus stakeholders.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Pronto para Transformar Seu ESG?</h2>
+        <p>A tecnologia que valida o futuro da sua empresa está a um clique. Fale com um especialista hoje mesmo.</p>
+        <a href="contato-e-suporte.html" class="btn-primary">Fale com um Especialista</a>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Funcionalidade do Menu Lateral (Mobile)
+            const sidebarMenu = document.getElementById('sidebar-menu');
+            const menuIconMain = document.getElementById('menu-icon-main');
+            const menuLinks = document.querySelectorAll('#sidebar-menu .menu-list a'); 
+
+            function toggleMenu() {
+                if (sidebarMenu) {
+                    sidebarMenu.classList.toggle('active');
+                }
+            }
+
+            if (menuIconMain) {
+                menuIconMain.addEventListener('click', toggleMenu);
+            }
+            
+            // Fecha o menu lateral ao clicar em um link (mobile)
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (sidebarMenu && sidebarMenu.classList.contains('active')) {
+                        setTimeout(() => {
+                            sidebarMenu.classList.remove('active');
+                        }, 300); 
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

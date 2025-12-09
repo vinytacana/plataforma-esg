@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato e Suporte</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* --- Variáveis de Estilo (PADRÃO MARROM/BEGE) --- */
+        :root {
+            --color-brown-dark: #584033;     
+            --color-brown-medium: #8D6E5D;   
+            --color-brown-light: #F4EDE8;    
+            --color-text-dark: var(--color-brown-dark);
+            --color-text-light: #9C8C83;     
+            --color-white: #FFFFFF;          
+            --color-hover-light: #A38271; 
+            --font-primary: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: var(--font-primary);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-white); 
+            min-height: 100vh;
+            color: var(--color-text-dark);
+        }
+
+        /* --- Estilo do Cabeçalho e Navegação Principal (Repetição) --- */
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 70px; 
+            background-color: var(--color-white);
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo a img { height: 35px; vertical-align: middle; }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px; 
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-text-dark);
+            font-weight: 600;
+            font-size: 16px;
+            padding: 5px 0;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--color-brown-medium);
+        }
+
+        /* --- ESTILOS DO BOTÃO PRINCIPAL (Acessar Plataforma - HEADER) --- */
+        .access-button-header { 
+            display: inline-block; 
+            text-decoration: none; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            background-color: var(--color-brown-dark); 
+            color: var(--color-white) !important; 
+            margin-left: 20px;
+        }
+        .access-button-header:hover { 
+            background-color: #6a5345; 
+            transform: translateY(-1px); 
+        }
+
+        /* Mobile Menu */
+        .menu-icon { display: none; }
+        .sidebar-menu { 
+            display: none; 
+            flex-direction: column;
+            position: fixed;
+            top: 75px; 
+            right: 0;
+            width: 100%;
+            max-width: 300px;
+            background-color: var(--color-brown-light);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+            z-index: 1000;
+            height: calc(100vh - 75px);
+        }
+        .sidebar-menu.active {
+            transform: translateX(0);
+        }
+        .sidebar-menu .menu-list {
+            list-style: none;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .sidebar-menu .menu-list a {
+            display: block;
+            padding: 15px 0;
+            text-decoration: none;
+            color: var(--color-brown-dark);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+        .sidebar-menu .menu-list a:hover {
+            color: var(--color-brown-medium);
+        }
+        .sidebar-menu .access-button {
+             display: block; 
+             text-align: center;
+             text-decoration: none; 
+             padding: 15px 35px; 
+             border: none; 
+             border-radius: 8px; 
+             font-size: 16px; 
+             font-weight: 600; 
+             cursor: pointer; 
+             background-color: var(--color-brown-dark); 
+             color: var(--color-white) !important; 
+             width: 100%; 
+             margin-top: auto; 
+        }
+
+        /* --- Layout de Conteúdo --- */
+        .content-section {
+            padding: 80px 70px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .content-section h1 {
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--color-brown-medium);
+            margin-bottom: 10px;
+        }
+        
+        .content-section > p {
+            font-size: 20px;
+            color: var(--color-text-light);
+            margin-bottom: 50px;
+            border-bottom: 2px solid var(--color-brown-light);
+            padding-bottom: 30px;
+        }
+
+        /* --- Formulário de Contato --- */
+        .contact-grid {
+            display: flex;
+            gap: 50px;
+        }
+
+        .contact-form {
+            flex: 1;
+            padding: 40px;
+            background-color: var(--color-brown-light);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-form h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-brown-dark);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            color: var(--color-text-dark);
+            background-color: var(--color-white);
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--color-brown-medium);
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: var(--color-brown-medium); 
+            color: var(--color-white);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--color-hover-light); 
+            transform: translateY(-2px);
+        }
+
+        /* --- Informações de Suporte --- */
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-info h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-brown-dark);
+            margin-bottom: 25px;
+        }
+
+        .info-card {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: var(--color-white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-card .material-icons {
+            font-size: 30px;
+            color: var(--color-brown-medium);
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+
+        .info-details h3 {
+            font-size: 18px;
+            color: var(--color-brown-dark);
+            margin-bottom: 5px;
+        }
+
+        .info-details p {
+            font-size: 16px;
+            color: var(--color-text-light);
+        }
+        
+        /* --- Responsividade --- */
+        @media (max-width: 900px) {
+            .header-main { padding: 20px 20px; }
+            .nav-links { display: none; } 
+            .access-button-header { display: none; } 
+            .menu-icon { display: block; }
+            .sidebar-menu { display: flex; }
+
+            .content-section { padding: 50px 20px; }
+            .content-section h1 { font-size: 38px; }
+            .content-section > p { font-size: 18px; margin-bottom: 40px; }
+            
+            .contact-grid { flex-direction: column; gap: 30px; }
+            .contact-form { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-main">
+        <div class="logo">
+            <a href="index.html">
+                <img src="casca2.png" alt="Logo da Casca">
+            </a>
+        </div>
+        
+        <!-- Navegação Desktop -->
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="solucoes.html">Soluções</a>
+            <a href="metodologia.html">Metodologia ESG</a>
+            <a href="contato-e-suporte.html" class="active">Contato e Suporte</a>
+            
+            <!-- BOTÃO DE ACESSO DESKTOP: APONTA PARA O PAINEL -->
+            <a href="painel-esg-abc.html" class="access-button-header">
+                Acessar Plataforma
+            </a>
+        </div>
+        
+        <!-- Ícone de Menu para Mobile -->
+        <div id="menu-icon-main" class="menu-icon">
+            <span class="material-icons">menu</span>
+        </div>
+    </header>
+
+    <!-- Menu Lateral (Sidebar) para Mobile -->
+    <nav id="sidebar-menu" class="sidebar-menu">
+        <ul class="menu-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="solucoes.html">Soluções</a></li>
+            <li><a href="metodologia.html">Metodologia ESG</a></li>
+            <li><a href="contato-e-suporte.html" class="active">Contato e Suporte</a></li> 
+        </ul>
+        <!-- BOTÃO DE ACESSO MOBILE: APONTA PARA O PAINEL -->
+        <a href="painel-esg-abc.html" class="access-button">
+            Acessar Plataforma
+        </a>
+    </nav>
+
+    <!-- Seção Principal de Contato -->
+    <section class="content-section">
+        <h1>Fale Conosco e Obtenha Suporte</h1>
+        <p>Seja para iniciar uma parceria ou resolver uma dúvida, nossa equipe está pronta para te ajudar a trilhar o caminho da sustentabilidade verificada.</p>
+        
+        <div class="contact-grid">
+            <!-- Coluna 1: Formulário de Contato -->
+            <div class="contact-form">
+                <h2>Envie sua Mensagem</h2>
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label for="name">Nome Completo</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail Corporativo</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Assunto</label>
+                        <select id="subject" name="subject" required>
+                            <option value="" disabled selected>Selecione um Assunto</option>
+                            <option value="comercial">Interesse Comercial / Demonstração</option>
+                            <option value="suporte">Suporte Técnico / Dúvida na Plataforma</option>
+                            <option value="parceria">Parcerias e Mídia</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Mensagem</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Enviar Mensagem</button>
+                </form>
+            </div>
+
+            <!-- Coluna 2: Informações de Contato -->
+            <div class="contact-info">
+                <h2>Canais de Atendimento</h2>
+                
+                <div class="info-card">
+                    <span class="material-icons">email</span>
+                    <div class="info-details">
+                        <h3>E-mail de Contato</h3>
+                        <p>comercial@casca.com.br</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <span class="material-icons">support_agent</span>
+                    <div class="info-details">
+                        <h3>Suporte Técnico</h3>
+                        <p>suporte@casca.com.br</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <span class="material-icons">phone</span>
+                    <div class="info-details">
+                        <h3>Telefone (Central)</h3>
+                        <p>+55 (11) 99876-5432</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <span class="material-icons">schedule</span>
+                    <div class="info-details">
+                        <h3>Horário de Atendimento</h3>
+                        <p>Segunda a Sexta, 9h00 às 18h00 (BRT)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Funcionalidade do Menu Lateral (Mobile)
+            const sidebarMenu = document.getElementById('sidebar-menu');
+            const menuIconMain = document.getElementById('menu-icon-main');
+            const menuLinks = document.querySelectorAll('#sidebar-menu a'); 
+
+            function toggleMenu() {
+                if (menuIconMain.classList.contains('active')) {
+                    menuIconMain.classList.remove('active');
+                    sidebarMenu.classList.remove('active');
+                    menuIconMain.querySelector('.material-icons').textContent = 'menu';
+                } else {
+                    menuIconMain.classList.add('active');
+                    sidebarMenu.classList.add('active');
+                    menuIconMain.querySelector('.material-icons').textContent = 'close';
+                }
+            }
+
+            if (menuIconMain) {
+                menuIconMain.addEventListener('click', toggleMenu);
+            }
+            
+            // Fecha o menu lateral ao clicar em um link (mobile)
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (sidebarMenu && sidebarMenu.classList.contains('active')) {
+                        setTimeout(() => {
+                            sidebarMenu.classList.remove('active');
+                            menuIconMain.classList.remove('active');
+                            menuIconMain.querySelector('.material-icons').textContent = 'menu';
+                        }, 300); 
+                    }
+                });
+            });
+            
+            // Adiciona um listener simples ao formulário (apenas para simular o envio)
+            const contactForm = document.querySelector('.contact-form form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Simulação de mensagem de sucesso (em vez de alert)
+                    const submitButton = contactForm.querySelector('.btn-submit');
+                    const originalText = submitButton.textContent;
+                    
+                    submitButton.textContent = 'Mensagem Enviada com Sucesso!';
+                    submitButton.style.backgroundColor = '#4CAF50'; // Verde de sucesso
+
+                    setTimeout(() => {
+                        submitButton.textContent = originalText;
+                        submitButton.style.backgroundColor = 'var(--color-brown-medium)';
+                        contactForm.reset();
+                    }, 3000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

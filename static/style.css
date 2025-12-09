@@ -1,0 +1,382 @@
+/* --- 1. Variáveis e Reset --- */
+:root {
+    --color-green-dark: #1E3A39;     
+    --color-green-medium: #2A6A4E;   
+    --color-green-light: #E0EEDD;    
+    --color-text-dark: var(--color-green-dark);
+    --color-text-light: #587978;     
+    --color-white: #FFFFFF;          
+    --font-primary: 'Poppins', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-primary);
+}
+
+/* 🟢 BODY: Fundo verde claro e sem centralização forçada */
+body {
+    background-color: var(--color-green-light); 
+    min-height: 100vh;
+}
+
+/* 🟢 HERO: Fundo verde claro, sem caixa arredondada, sem margem e sem sombra */
+.hero-section {
+    background-color: var(--color-green-light); 
+    padding: 50px 70px; 
+    position: relative;
+}
+
+/* --- 3. Cabeçalho (Logo, Perfil e Menu) --- */
+
+/* Estilização do topo do cabeçalho para alinhamento */
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; 
+    margin-bottom: 50px; 
+}
+
+/* Container para o botão de Perfil e Menu */
+.user-actions {
+    display: flex;
+    gap: 20px; 
+    align-items: center;
+}
+
+/* Estilização do Botão de Perfil */
+.profile-button {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-white); 
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s;
+}
+
+.profile-button:hover {
+    background-color: #f0f0f0;
+}
+
+.profile-button svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-dark);
+}
+
+.logo img {
+    height: 35px;
+}
+
+.menu-icon {
+    cursor: pointer;
+    padding: 5px;
+}
+
+.menu-icon div {
+    width: 28px;
+    height: 3px;
+    background-color: var(--color-text-dark);
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+/* --- 4. Conteúdo Central --- */
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+    padding: 0 0 50px 0; 
+    
+    max-width: 800px; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.subtitle {
+    color: var(--color-text-dark);
+    font-size: 14px;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.main-title {
+    font-size: 64px;
+    line-height: 1.05;
+    color: var(--color-text-dark);
+    margin-bottom: 25px;
+    font-weight: 800;
+}
+
+.main-title .highlight {
+    color: var(--color-green-medium);
+}
+
+.description {
+    color: var(--color-text-light);
+    font-size: 19px;
+    line-height: 1.6;
+    margin-bottom: 50px;
+    max-width: 650px;
+}
+
+/* --- 5. Botões (CTAs) --- */
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.btn {
+    padding: 18px 35px;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+    letter-spacing: 0.5px;
+}
+
+.primary-btn {
+    background-color: var(--color-green-dark);
+    color: var(--color-white);
+    box-shadow: 0 5px 15px rgba(30, 58, 57, 0.3);
+}
+
+.primary-btn:hover {
+    background-color: #385958; 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(30, 58, 57, 0.4);
+}
+
+.secondary-btn {
+    background-color: var(--color-white); 
+    color: var(--color-green-dark);
+    border: 2px solid var(--color-green-dark);
+}
+
+.secondary-btn:hover {
+    background-color: #f0f0f0; 
+    transform: translateY(-2px);
+}
+
+/* --- 6. Ícone de Ajuda --- */
+.help-icon {
+    position: fixed; 
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--color-green-medium);
+    color: var(--color-white);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+    z-index: 100; 
+}
+
+.help-icon:hover {
+    transform: scale(1.05);
+}
+
+/* --- 9. Menu Lateral (Sidebar) --- */
+.sidebar-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px; /* Largura do menu */
+    height: 100%;
+    background-color: var(--color-white);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 200; 
+    padding: 100px 30px 30px; 
+    
+    /* Estado Inicial: Esconde o menu para a direita */
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out; /* Transição suave */
+    
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estado Ativo: Exibe o menu */
+.sidebar-menu.active {
+    transform: translateX(0);
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+.menu-list li {
+    margin-bottom: 25px;
+}
+
+.menu-list a {
+    text-decoration: none;
+    color: var(--color-text-dark);
+    font-size: 18px;
+    font-weight: 600;
+    display: block;
+    padding: 5px 0;
+    transition: color 0.2s;
+}
+
+.menu-list a:hover {
+    color: var(--color-green-medium);
+}
+
+.access-button {
+    width: 100%;
+    margin-top: auto; /* Empurra o botão para baixo */
+    padding: 15px;
+}
+
+
+/* --- 8. Seção de Benefícios (Por Que Escolher) --- */
+.benefits-section {
+    padding: 80px 70px;
+    background-color: var(--color-white); 
+    color: var(--color-text-dark);
+}
+
+.benefits-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-header h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--color-text-dark);
+}
+
+.section-header p {
+    font-size: 18px;
+    color: var(--color-text-light);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Grid e Cards */
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 30px;
+}
+
+.benefit-card {
+    background-color: var(--color-white); 
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+    transition: transform 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.icon-wrapper {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    background-color: var(--color-green-light); 
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.icon-wrapper svg {
+    width: 28px;
+    height: 28px;
+    color: var(--color-green-medium); 
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.card-description {
+    font-size: 15px;
+    color: var(--color-text-light);
+    line-height: 1.6;
+}
+
+
+/* --- 7. Responsividade --- */
+@media (max-width: 1000px) {
+    .benefits-grid {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 20px; 
+    }
+    .hero-content {
+        padding: 60px 0 30px 0;
+    }
+    .main-title {
+        font-size: 40px;
+    }
+    .description {
+        font-size: 16px;
+    }
+    .cta-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .btn {
+        width: 100%;
+        min-width: unset;
+    }
+    .user-actions {
+        position: absolute;
+        top: 40px;
+        right: 20px;
+    }
+    .help-icon {
+        bottom: 20px;
+        right: 20px;
+    }
+}
+@media (max-width: 600px) {
+    .benefits-section {
+        padding: 50px 20px;
+    }
+    .benefits-grid {
+        grid-template-columns: 1fr; 
+    }
+}

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soluções - Plataforma ESG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* --- Variáveis de Estilo (PADRÃO MARROM/BEGE) --- */
+        :root {
+            --color-brown-dark: #584033;     
+            --color-brown-medium: #8D6E5D;   
+            --color-brown-light: #F4EDE8;    
+            --color-text-dark: var(--color-brown-dark);
+            --color-text-light: #9C8C83;     
+            --color-white: #FFFFFF;          
+            --color-hover-light: #A38271; 
+            --font-primary: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: var(--font-primary);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-white); 
+            min-height: 100vh;
+            color: var(--color-text-dark);
+        }
+
+        /* --- Estilo do Cabeçalho e Navegação Principal --- */
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 70px; 
+            background-color: var(--color-white);
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo a img { height: 35px; vertical-align: middle; }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px; 
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-text-dark);
+            font-weight: 600;
+            font-size: 16px;
+            padding: 5px 0;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--color-brown-medium);
+        }
+
+        /* --- ESTILOS DO BOTÃO PRINCIPAL (Acessar Plataforma - HEADER) --- */
+        .access-button-header { 
+            display: inline-block; 
+            text-decoration: none; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            background-color: var(--color-brown-dark); 
+            color: var(--color-white) !important; 
+            margin-left: 20px;
+        }
+        .access-button-header:hover { 
+            background-color: #6a5345; 
+            transform: translateY(-1px); 
+        }
+
+        /* Oculta o menu de hamburguer na versão desktop */
+        .menu-icon { display: none; }
+        .sidebar-menu { 
+            display: none; 
+            flex-direction: column;
+            position: fixed;
+            top: 75px; 
+            right: 0;
+            width: 100%;
+            max-width: 300px;
+            background-color: var(--color-brown-light);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+            z-index: 1000;
+            height: calc(100vh - 75px);
+        }
+        .sidebar-menu.active {
+            transform: translateX(0);
+        }
+        .sidebar-menu .menu-list {
+            list-style: none;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .sidebar-menu .menu-list a {
+            display: block;
+            padding: 15px 0;
+            text-decoration: none;
+            color: var(--color-brown-dark);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+        .sidebar-menu .menu-list a:hover {
+            color: var(--color-brown-medium);
+        }
+        .sidebar-menu .access-button {
+             display: block; 
+             text-align: center;
+             text-decoration: none; 
+             padding: 15px 30px; 
+             border: none; 
+             border-radius: 8px; 
+             font-size: 16px; 
+             font-weight: 600; 
+             cursor: pointer; 
+             background-color: var(--color-brown-dark); 
+             color: var(--color-white) !important; 
+             width: 100%; 
+             margin-top: auto; 
+        }
+        
+        /* --- Layout de Conteúdo --- */
+        .content-section {
+            padding: 80px 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .content-section h1 {
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--color-brown-medium);
+            margin-bottom: 10px;
+        }
+        
+        .content-section > p {
+            font-size: 20px;
+            color: var(--color-text-light);
+            margin-bottom: 60px;
+            border-bottom: 2px solid var(--color-brown-light);
+            padding-bottom: 30px;
+        }
+
+        /* --- Grid de Soluções --- */
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .solution-card {
+            background-color: var(--color-brown-light);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .solution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .solution-card .icon {
+            font-size: 45px;
+            color: var(--color-brown-medium);
+            margin-bottom: 20px;
+        }
+
+        .solution-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-brown-dark);
+            margin-bottom: 15px;
+        }
+
+        .solution-card p {
+            font-size: 16px;
+            color: var(--color-text-dark);
+            line-height: 1.6;
+        }
+
+        /* --- Seção de Testemunhos/Destaque --- */
+        .cta-box {
+            background-color: var(--color-brown-dark);
+            color: var(--color-white);
+            padding: 50px;
+            border-radius: 15px;
+            margin-top: 80px;
+            text-align: center;
+        }
+        
+        .cta-box h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .cta-box p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: var(--color-brown-light);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            padding: 15px 35px;
+            border: 2px solid var(--color-white);
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--color-white);
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-white);
+            color: var(--color-brown-dark);
+        }
+
+        /* --- Responsividade --- */
+        @media (max-width: 900px) {
+            .header-main { padding: 20px 20px; }
+            .nav-links { display: none; } 
+            .access-button-header { display: none; } 
+            .menu-icon { display: block; }
+            .sidebar-menu { display: flex; }
+
+            .content-section { padding: 50px 20px; }
+            .content-section h1 { font-size: 38px; }
+            .content-section > p { font-size: 18px; margin-bottom: 40px; }
+            
+            .solution-grid { grid-template-columns: 1fr; gap: 30px; }
+            .cta-box { padding: 30px 20px; }
+            .cta-box h2 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-main">
+        <div class="logo">
+            <a href="index.html">
+                <img src="casca2.png" alt="Logo da Casca">
+            </a>
+        </div>
+        
+        <!-- Navegação Desktop -->
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="solucoes.html" class="active">Soluções</a>
+            <a href="metodologia.html">Metodologia ESG</a>
+            <a href="contato-e-suporte.html">Contato e Suporte</a>
+            
+            <!-- BOTÃO DE ACESSO DESKTOP: APONTA PARA O PAINEL -->
+            <a href="painel-esg-abc.html" class="access-button-header">
+                Acessar Plataforma
+            </a>
+        </div>
+        
+        <!-- Ícone de Menu para Mobile -->
+        <div id="menu-icon-main" class="menu-icon">
+            <span class="material-icons">menu</span>
+        </div>
+    </header>
+
+    <!-- Menu Lateral (Sidebar) para Mobile -->
+    <nav id="sidebar-menu" class="sidebar-menu">
+        <ul class="menu-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="solucoes.html" class="active">Soluções</a></li>
+            <li><a href="metodologia.html">Metodologia ESG</a></li>
+            <li><a href="contato-e-suporte.html">Contato e Suporte</a></li> 
+        </ul>
+        <!-- BOTÃO DE ACESSO MOBILE: APONTA PARA O PAINEL -->
+        <a href="painel-esg-abc.html" class="access-button">
+            Acessar Plataforma
+        </a>
+    </nav>
+
+    <!-- Seção Principal de Soluções -->
+    <section class="content-section">
+        <h1>Soluções Digitais para a Transformação ESG</h1>
+        <p>Desenvolvemos ferramentas baseadas em Blockchain e IA para garantir que seus dados de sustentabilidade sejam confiáveis e acionáveis.</p>
+        
+        <div class="solution-grid">
+            
+            <!-- Solução 1: Verificação Blockchain -->
+            <div class="solution-card">
+                <span class="material-icons icon">verified_user</span>
+                <h3>Validação Imutável</h3>
+                <p>Nossa solução registra todas as suas métricas ESG em um Ledger Distribuído (Blockchain), garantindo que os dados sejam à prova de falsificação e totalmente auditáveis por terceiros.</p>
+            </div>
+
+            <!-- Solução 2: Relatórios Inteligentes -->
+            <div class="solution-card">
+                <span class="material-icons icon">assessment</span>
+                <h3>Relatórios e Compliance</h3>
+                <p>Gere automaticamente relatórios de sustentabilidade que atendem aos principais frameworks globais, como GRI, SASB e TCFD, reduzindo o tempo de conformidade em até 70%.</p>
+            </div>
+
+            <!-- Solução 3: ESG Score em Tempo Real -->
+            <div class="solution-card">
+                <span class="material-icons icon">data_usage</span>
+                <h3>Monitoramento Contínuo</h3>
+                <p>Monitore seu ESG Score em tempo real. Nossa IA identifica gargalos, previne riscos regulatórios e sugere ações corretivas para otimizar seu desempenho.</p>
+            </div>
+            
+            <!-- Solução 4: Gestão de Cadeia de Suprimentos -->
+            <div class="solution-card">
+                <span class="material-icons icon">local_shipping</span>
+                <h3>Transparência na Cadeia (E & S)</h3>
+                <p>Rastreie o impacto ambiental e social de toda a sua cadeia de suprimentos. Verifique a origem de materiais e garanta práticas trabalhistas justas, mitigando riscos de reputação.</p>
+            </div>
+            
+            <!-- Solução 5: Governança Automatizada -->
+            <div class="solution-card">
+                <span class="material-icons icon">gavel</span>
+                <h3>Métricas de Governança (G)</h3>
+                <p>Automatize a coleta de dados de diversidade do conselho, remuneração executiva e estrutura de propriedade, mantendo o compliance regulatório sempre em dia.</p>
+            </div>
+            
+            <!-- Solução 6: Certificação e Selo -->
+            <div class="solution-card">
+                <span class="material-icons icon">badge</span>
+                <h3>Selo de Integridade Casca</h3>
+                <p>Use nosso selo verificado por Blockchain para comunicar de forma confiável seu compromisso com stakeholders e investidores. Sua sustentabilidade comprovada.</p>
+            </div>
+
+        </div>
+        
+        <div class="cta-box">
+            <h2>Quer ver as Soluções em Ação?</h2>
+            <p>Agende uma demonstração personalizada e descubra como a Casca se encaixa nas necessidades exclusivas da sua empresa.</p>
+            <a href="contato-e-suporte.html" class="btn-secondary">Solicitar Demonstração</a>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Funcionalidade do Menu Lateral (Mobile)
+            const sidebarMenu = document.getElementById('sidebar-menu');
+            const menuIconMain = document.getElementById('menu-icon-main');
+            const menuLinks = document.querySelectorAll('#sidebar-menu a'); 
+
+            function toggleMenu() {
+                if (sidebarMenu) {
+                    sidebarMenu.classList.toggle('active');
+                }
+            }
+
+            if (menuIconMain) {
+                menuIconMain.addEventListener('click', toggleMenu);
+            }
+            
+            // Fecha o menu lateral ao clicar em um link (mobile)
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (sidebarMenu && sidebarMenu.classList.contains('active')) {
+                        // Pequeno atraso para permitir a navegação antes de fechar a sidebar
+                        setTimeout(() => {
+                            sidebarMenu.classList.remove('active');
+                        }, 300); 
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

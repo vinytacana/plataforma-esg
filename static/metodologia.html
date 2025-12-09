@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodologia - Padrões ESG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* --- Variáveis de Estilo (PADRÃO MARROM/BEGE) --- */
+        :root {
+            --color-brown-dark: #584033;     
+            --color-brown-medium: #8D6E5D;   
+            --color-brown-light: #F4EDE8;    
+            --color-text-dark: var(--color-brown-dark);
+            --color-text-light: #9C8C83;     
+            --color-white: #FFFFFF;          
+            --color-hover-light: #A38271; 
+            --font-primary: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: var(--font-primary);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-white); 
+            min-height: 100vh;
+            color: var(--color-text-dark);
+        }
+
+        /* --- Estilo do Cabeçalho e Navegação Principal (Repetição de Solucoes.html) --- */
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 70px; 
+            background-color: var(--color-white);
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo a img { height: 35px; vertical-align: middle; }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px; 
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-text-dark);
+            font-weight: 600;
+            font-size: 16px;
+            padding: 5px 0;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--color-brown-medium);
+        }
+
+        /* --- ESTILOS DO BOTÃO PRINCIPAL (Acessar Plataforma - HEADER) --- */
+        .access-button-header { 
+            display: inline-block; 
+            text-decoration: none; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            background-color: var(--color-brown-dark); 
+            color: var(--color-white) !important; 
+            margin-left: 20px;
+        }
+        .access-button-header:hover { 
+            background-color: #6a5345; 
+            transform: translateY(-1px); 
+        }
+
+        /* Mobile Menu */
+        .menu-icon { display: none; }
+        .sidebar-menu { 
+            display: none; 
+            flex-direction: column;
+            position: fixed;
+            top: 75px; 
+            right: 0;
+            width: 100%;
+            max-width: 300px;
+            background-color: var(--color-brown-light);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+            z-index: 1000;
+            height: calc(100vh - 75px);
+        }
+        .sidebar-menu.active {
+            transform: translateX(0);
+        }
+        .sidebar-menu .menu-list {
+            list-style: none;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .sidebar-menu .menu-list a {
+            display: block;
+            padding: 15px 0;
+            text-decoration: none;
+            color: var(--color-brown-dark);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+        .sidebar-menu .menu-list a:hover {
+            color: var(--color-brown-medium);
+        }
+        .sidebar-menu .access-button {
+             display: block; 
+             text-align: center;
+             text-decoration: none; 
+             padding: 15px 35px; 
+             border: none; 
+             border-radius: 8px; 
+             font-size: 16px; 
+             font-weight: 600; 
+             cursor: pointer; 
+             background-color: var(--color-brown-dark); 
+             color: var(--color-white) !important; 
+             width: 100%; 
+             margin-top: auto; 
+        }
+
+        /* --- Layout de Conteúdo --- */
+        .content-section {
+            padding: 80px 70px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .content-section h1 {
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--color-brown-medium);
+            margin-bottom: 10px;
+        }
+        
+        .content-section > p {
+            font-size: 20px;
+            color: var(--color-text-light);
+            margin-bottom: 50px;
+        }
+
+        /* Tópicos da Metodologia */
+        .methodology-topic {
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--color-brown-light);
+        }
+
+        .methodology-topic h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-brown-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .methodology-topic .material-icons {
+            font-size: 36px;
+            color: var(--color-brown-medium);
+        }
+
+        .methodology-topic p {
+            font-size: 17px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: var(--color-text-dark);
+        }
+        
+        .standards-list {
+            list-style: none;
+            padding: 20px 30px;
+            background-color: var(--color-brown-light);
+            border-radius: 10px;
+        }
+
+        .standards-list li {
+            font-size: 16px;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            color: var(--color-brown-dark);
+        }
+        .standards-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* --- Responsividade --- */
+        @media (max-width: 900px) {
+            .header-main { padding: 20px 20px; }
+            .nav-links { display: none; } 
+            .access-button-header { display: none; } 
+            .menu-icon { display: block; }
+            .sidebar-menu { display: flex; }
+
+            .content-section { padding: 50px 20px; }
+            .content-section h1 { font-size: 38px; }
+            .content-section > p { font-size: 18px; margin-bottom: 40px; }
+            
+            .methodology-topic h2 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-main">
+        <div class="logo">
+            <a href="index.html">
+                <img src="casca2.png" alt="Logo da Casca">
+            </a>
+        </div>
+        
+        <!-- Navegação Desktop -->
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="solucoes.html">Soluções</a>
+            <a href="metodologia.html" class="active">Metodologia ESG</a>
+            <a href="contato-e-suporte.html">Contato e Suporte</a>
+            
+            <!-- BOTÃO DE ACESSO DESKTOP: APONTA PARA O PAINEL -->
+            <a href="painel-esg-abc.html" class="access-button-header">
+                Acessar Plataforma
+            </a>
+        </div>
+        
+        <!-- Ícone de Menu para Mobile -->
+        <div id="menu-icon-main" class="menu-icon">
+            <span class="material-icons">menu</span>
+        </div>
+    </header>
+
+    <!-- Menu Lateral (Sidebar) para Mobile -->
+    <nav id="sidebar-menu" class="sidebar-menu">
+        <ul class="menu-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="solucoes.html">Soluções</a></li>
+            <li><a href="metodologia.html" class="active">Metodologia ESG</a></li>
+            <li><a href="contato-e-suporte.html">Contato e Suporte</a></li> 
+        </ul>
+        <!-- BOTÃO DE ACESSO MOBILE: APONTA PARA O PAINEL -->
+        <a href="painel-esg-abc.html" class="access-button">
+            Acessar Plataforma
+        </a>
+    </nav>
+
+    <!-- Seção Principal de Metodologia -->
+    <section class="content-section">
+        <h1>Metodologia: O Padrão de Confiança Casca</h1>
+        <p>Nossa abordagem é baseada em rigor científico, transparência Blockchain e adesão aos mais reconhecidos padrões internacionais de relatórios.</p>
+        
+        <!-- Tópico 1: Rigor de Dados e IA -->
+        <div class="methodology-topic">
+            <h2><span class="material-icons">filter_alt</span> Coleta e Validação Automatizada</h2>
+            <p>Utilizamos algoritmos avançados de Inteligência Artificial para processar dados brutos de diversas fontes (ERP, IoT, sistemas legados). A IA classifica, normaliza e aplica fatores de emissão, garantindo a consistência dos dados antes de qualquer registro permanente.</p>
+            <p>O foco é na **Dupla Materialidade**, avaliando tanto o impacto da empresa no ambiente quanto o impacto das questões ESG no valor da empresa.</p>
+        </div>
+
+        <!-- Tópico 2: Blockchain e Imutabilidade -->
+        <div class="methodology-topic">
+            <h2><span class="material-icons">lock</span> Imutabilidade via DLT (Blockchain)</h2>
+            <p>Após a validação pela IA, os *hashes* dos dados são registrados em nossa rede privada de Distributed Ledger Technology. Isso cria uma trilha de auditoria inviolável e permanente. É a garantia tecnológica contra a manipulação de dados (*greenwashing*).</p>
+        </div>
+
+        <!-- Tópico 3: Padrões e Frameworks -->
+        <div class="methodology-topic">
+            <h2><span class="material-icons">gpp_good</span> Padrões de Relatório Suportados</h2>
+            <p>A plataforma Casca está alinhada com as estruturas de relatórios mais exigentes do mundo. Isso assegura que nossos clientes possam se comunicar com clareza com qualquer stakeholder global.</p>
+            <ul class="standards-list">
+                <li>Global Reporting Initiative (GRI)</li>
+                <li>Sustainability Accounting Standards Board (SASB)</li>
+                <li>Task Force on Climate-Related Financial Disclosures (TCFD)</li>
+                <li>Objetivos de Desenvolvimento Sustentável (ODS/ONU)</li>
+            </ul>
+        </div>
+        
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Funcionalidade do Menu Lateral (Mobile)
+            const sidebarMenu = document.getElementById('sidebar-menu');
+            const menuIconMain = document.getElementById('menu-icon-main');
+            const menuLinks = document.querySelectorAll('#sidebar-menu a'); 
+
+            function toggleMenu() {
+                if (sidebarMenu) {
+                    sidebarMenu.classList.toggle('active');
+                }
+            }
+
+            if (menuIconMain) {
+                menuIconMain.addEventListener('click', toggleMenu);
+            }
+            
+            // Fecha o menu lateral ao clicar em um link (mobile)
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (sidebarMenu && sidebarMenu.classList.contains('active')) {
+                        setTimeout(() => {
+                            sidebarMenu.classList.remove('active');
+                        }, 300); 
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
