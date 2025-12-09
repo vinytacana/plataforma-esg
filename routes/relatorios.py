@@ -4,29 +4,32 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from database import get_db
 from models.emissoes import EmissaoModel
-from models.energia import EnergiaModel
-from services.relatorio_service import gerar_csv_consolidado, gerar_pdf_certificado
+from models.residuos import ResiduoModel
+from services.relatorio_service import (
+    gerar_pdf_ghg, 
+    gerar_plano_descarbonizacao, 
+    gerar_csv_auditoria
+)
 
 router = APIRouter()
 
-@router.get("/exportar-csv")
-def exportar_csv(db: Session = Depends(get_db)):
-    """
-    Baixa um CSV com todo o histórico combinado (Data Science Ready).
-    """
+@router.get("/ghg-protocol")
+def baixar_relatorio_tecnico(db: Session = Depends(get_db)):
     emissoes = db.query(EmissaoModel).all()
-    energia = db.query(EnergiaModel).all()
-    
-    arquivo = gerar_csv_consolidado(emissoes, energia)
-    return FileResponse(arquivo, filename="relatorio_esg_completo.csv", media_type='text/csv')
+    arquivo = gerar_pdf_ghg(emissoes)
+    return FileResponse(arquivo, filename="Relatorio_GHG_2024.pdf", media_type='application/pdf')
 
-@router.get("/gerar-certificado")
-def baixar_certificado(db: Session = Depends(get_db)):
-    """
-    Gera um PDF oficial com totais e metodologia científica.
-    """
+@router.get("/plano-descarbonizacao")
+def baixar_plano_estrategico(db: Session = Depends(get_db)):
     emissoes = db.query(EmissaoModel).all()
-    energia = db.query(EnergiaModel).all()
+
+    arquivo = gerar_plano_descarbonizacao(emissoes)
+    return FileResponse(arquivo, filename="Plano_Descarbonizacao_2030.pdf", media_type='application/pdf')
+
+@router.get("/auditoria-compliance")
+def baixar_csv_compliance(db: Session = Depends(get_db)):
+    emissoes = db.query(EmissaoModel).all()
+    residuos = db.query(ResiduoModel).all()
     
-    arquivo = gerar_pdf_certificado(emissoes, energia)
-    return FileResponse(arquivo, filename="certificado_esg.pdf", media_type='application/pdf')
+    arquivo = gerar_csv_auditoria(emissoes, residuos)
+    return FileResponse(arquivo, filename="Auditoria_Conformidade.csv", media_type='text/csv')

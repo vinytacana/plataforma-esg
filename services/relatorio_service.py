@@ -2,82 +2,179 @@
 import pandas as pd
 from fpdf import FPDF
 from datetime import datetime
+import matplotlib.pyplot as plt
+import os
 
-class PDFReport(FPDF):
+# --- Configuração Visual ---
+COR_PRIMARIA = (88, 64, 51)    # Marrom
+COR_SECUNDARIA = (46, 125, 50) # Verde
+COR_CINZA = (128, 128, 128)
+
+class PDFTemplate(FPDF):
     def header(self):
-        self.set_font('Arial', 'B', 16)
-        self.cell(0, 10, 'Relatório de Impacto ESG & Emissões', 0, 1, 'C')
-        self.ln(5)
+        # Logo
+        if os.path.exists("static/casca2.png"):
+            self.image("static/casca2.png", 10, 8, 25)
+        
+        self.set_font('Arial', 'B', 14)
+        self.set_text_color(*COR_PRIMARIA)
+        self.cell(80)
+        self.cell(30, 10, 'Plataforma Casca ESG - Enterprise', 0, 0, 'C')
+        self.ln(20)
+        
+        # Linha Verde
+        self.set_draw_color(*COR_SECUNDARIA)
+        self.set_line_width(1)
+        self.line(10, 25, 200, 25)
 
     def footer(self):
         self.set_y(-15)
         self.set_font('Arial', 'I', 8)
-        self.cell(0, 10, f'Página {self.page_no()}', 0, 0, 'C')
+        self.set_text_color(*COR_CINZA)
+        self.cell(0, 10, f'Página {self.page_no()} - Documento Auditado via Blockchain', 0, 0, 'C')
 
-def gerar_csv_consolidado(lista_emissoes, lista_energia, filename="relatorio_esg.csv"):
-    """
-    Gera um CSV combinando dados de Emissões e Energia para análise de dados.
-    """
+# --- Funções Auxiliares de Gráfico ---
+def gerar_chart_pizza(s1, s2, s3):
+    filename = "temp_pie.png"
+    sizes = [s1, s2, s3]
+    if sum(sizes) == 0: sizes = [1, 1, 1] # Evita erro se vazio
+    
+    plt.figure(figsize=(5, 4))
+    plt.pie(sizes, labels=['Escopo 1', 'Escopo 2', 'Escopo 3'], 
+            colors=['#C62828', '#FF9800', '#4DB6AC'], autopct='%1.1f%%')
+    plt.title('Emissões por Escopo')
+    plt.savefig(filename)
+    plt.close()
+    return filename
+
+def gerar_chart_projecao(total_atual):
+    """Gera um gráfico de linha simulando a meta de redução"""
+    filename = "temp_line.png"
+    anos = ['2025', '2026', '2027', '2028', '2029', '2030']
+    # Simulação: Redução de 5% ao ano
+    metas = [total_atual * (0.95 ** i) for i in range(6)]
+    
+    plt.figure(figsize=(6, 3))
+    plt.plot(anos, metas, marker='o', color='green', linestyle='--')
+    plt.title('Trajetória de Descarbonização (Meta: -5% a.a.)')
+    plt.grid(True, alpha=0.3)
+    plt.ylabel('tCO2e')
+    plt.savefig(filename)
+    plt.close()
+    return filename
+
+# --- 1. RELATÓRIO TÉCNICO (GHG PROTOCOL) ---
+def gerar_pdf_ghg(lista_emissoes, filename="ghg_protocol_2024.pdf"):
+    pdf = PDFTemplate()
+    pdf.add_page()
+    
+    # Dados
+    total = sum(e.resultado_total for e in lista_emissoes) / 1000 # em toneladas
+    s1 = sum(e.resultado_escopo1 for e in lista_emissoes)
+    s2 = sum(e.resultado_escopo2 for e in lista_emissoes)
+    s3 = sum(e.resultado_escopo3 for e in lista_emissoes)
+    
+    # Título
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, "Inventário de Emissões - Padrão GHG Protocol", 0, 1, 'C')
+    pdf.ln(5)
+    
+    # Resumo
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 7, f"Este relatório consolida os dados de emissões diretas e indiretas conforme a norma ISO 14064. O total inventariado para o período é de {total:.2f} tCO2e.")
+    pdf.ln(5)
+    
+    # Gráfico
+    img = gerar_chart_pizza(s1, s2, s3)
+    pdf.image(img, x=50, w=110)
+    os.remove(img)
+    
+    # Tabela Técnica
+    pdf.ln(10)
+    pdf.set_font("Arial", 'B', 12)
+    pdf.set_fill_color(240, 240, 240)
+    pdf.cell(100, 10, "Escopo", 1, 0, 'L', fill=True)
+    pdf.cell(90, 10, "Emissão (kgCO2e)", 1, 1, 'R', fill=True)
+    
+    pdf.set_font("Arial", size=12)
+    pdf.cell(100, 10, "Escopo 1 (Combustão Estacionária/Móvel)", 1, 0)
+    pdf.cell(90, 10, f"{s1:.2f}", 1, 1, 'R')
+    pdf.cell(100, 10, "Escopo 2 (Energia Elétrica - Grid)", 1, 0)
+    pdf.cell(90, 10, f"{s2:.2f}", 1, 1, 'R')
+    pdf.cell(100, 10, "Escopo 3 (Logística e Viagens)", 1, 0)
+    pdf.cell(90, 10, f"{s3:.2f}", 1, 1, 'R')
+    
+    pdf.output(filename)
+    return filename
+
+# --- 2. PLANO ESTRATÉGICO (DESCARBONIZAÇÃO) ---
+def gerar_plano_descarbonizacao(lista_emissoes, filename="plano_descarbonizacao.pdf"):
+    pdf = PDFTemplate()
+    pdf.add_page()
+    
+    total_kg = sum(e.resultado_total for e in lista_emissoes)
+    total_ton = total_kg / 1000
+    
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, "Plano Estratégico de Descarbonização 2025-2030", 0, 1, 'C')
+    pdf.ln(10)
+    
+    # Gráfico de Projeção
+    img_proj = gerar_chart_projecao(total_ton)
+    pdf.image(img_proj, x=20, w=170)
+    os.remove(img_proj)
+    pdf.ln(5)
+    
+    pdf.set_font("Arial", 'B', 14)
+    pdf.cell(0, 10, "Metas Estabelecidas:", 0, 1)
+    
+    pdf.set_font("Arial", size=12)
+    metas = [
+        "1. Redução de 5% ao ano nas emissões de Escopo 1 (Substituição de Frota).",
+        "2. Migração para 100% de Energia Renovável (I-REC) até 2026.",
+        "3. Implementação de Política de 'Aterro Zero' para resíduos até 2028.",
+        "4. Compensação das emissões residuais via plantio de árvores nativas."
+    ]
+    
+    for meta in metas:
+        pdf.cell(0, 8, meta, 0, 1)
+        
+    pdf.ln(10)
+    pdf.set_font("Arial", 'I', 10)
+    pdf.multi_cell(0, 6, "Nota: Este plano é baseado na baseline de emissões atuais. O cumprimento das metas depende da adesão aos protocolos operacionais sugeridos pela Casca.")
+
+    pdf.output(filename)
+    return filename
+
+# --- 3. DADOS BRUTOS (CSV) ---
+def gerar_csv_auditoria(lista_emissoes, lista_residuos, filename="auditoria_compliance.csv"):
     dados = []
     
-    # Processa Emissões
-    for item in lista_emissoes:
+    # Consolidando tudo em uma tabela auditável
+    for i, item in enumerate(lista_emissoes):
         dados.append({
-            "Tipo": "Inventário GEE",
-            "ID": item.id,
+            "ID_Registro": f"GHG-{item.id}",
             "Data": item.data_calculo,
-            "Detalhe 1": f"Gasolina: {item.consumo_gasolina_l}L",
-            "Detalhe 2": f"Diesel: {item.consumo_diesel_l}L",
-            "Resultado Principal": f"{item.resultado_total:.2f} kgCO2e",
-            "Nota Científica": "Metodologia GHG Protocol (Escopos 1, 2, 3)"
+            "Categoria": "Emissao GEE",
+            "Detalhe": f"Escopo 1: {item.resultado_escopo1:.1f} | Energia: {item.consumo_eletricidade_kwh}",
+            "Impacto_Total_kgCO2e": item.resultado_total,
+            "Quimica_CO2": item.total_co2,
+            "Quimica_CH4": item.total_ch4,
+            "Status": "Calculado"
         })
-
-    # Processa Energia
-    for item in lista_energia:
+        
+    for item in lista_residuos:
         dados.append({
-            "Tipo": "Eficiência Energética",
-            "ID": item.id,
+            "ID_Registro": f"RES-{item.id}",
             "Data": item.data_calculo,
-            "Detalhe 1": f"Total: {item.consumo_total} kWh",
-            "Detalhe 2": f"Renovável: {item.percentual_renovavel:.1f}%",
-            "Resultado Principal": f"{item.emissoes_totais_tco2e:.4f} tCO2e",
-            "Nota Científica": "Cálculo Vetorial (GWP: CO2, CH4, N2O)"
+            "Categoria": "Residuos",
+            "Detalhe": f"{item.tipo} enviado para {item.destino}",
+            "Impacto_Total_kgCO2e": item.emissao_calculada,
+            "Quimica_CO2": 0,
+            "Quimica_CH4": item.emissao_calculada if item.destino == 'aterro' else 0,
+            "Status": "Rastreado"
         })
 
     df = pd.DataFrame(dados)
-    df.to_csv(filename, index=False)
-    return filename
-
-def gerar_pdf_certificado(lista_emissoes, lista_energia, filename="certificado_esg.pdf"):
-    pdf = PDFReport()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    
-    # Resumo Executivo
-    total_emissoes_kg = sum(e.resultado_total for e in lista_emissoes)
-    total_energia_tco2e = sum(e.emissoes_totais_tco2e for e in lista_energia)
-    
-    pdf.set_font("Arial", 'B', 14)
-    pdf.cell(0, 10, "Resumo Executivo", 0, 1)
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, f"Este documento certifica o processamento dos dados ambientais da organização. "
-                          f"Foram analisados {len(lista_emissoes)} registros de emissões diretas e "
-                          f"{len(lista_energia)} registros de matriz energética.")
-    pdf.ln(5)
-    
-    # Tabela de Resultados
-    pdf.set_fill_color(200, 220, 255)
-    pdf.cell(0, 10, f"Total Inventariado (GEE): {total_emissoes_kg:.2f} kgCO2e", 0, 1, fill=True)
-    pdf.cell(0, 10, f"Pegada de Carbono (Energia): {total_energia_tco2e:.4f} tCO2e", 0, 1, fill=True)
-    
-    pdf.ln(10)
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Declaração Metodológica:", 0, 1)
-    pdf.set_font("Arial", size=10)
-    pdf.multi_cell(0, 6, 
-        "Os cálculos utilizam vetores estequiométricos baseados no IPCC AR6 e fatores do Sistema Interligado Nacional (SIN). "
-        "Considera-se o Potencial de Aquecimento Global (GWP) para CO2, CH4 e N2O."
-    )
-    
-    pdf.output(filename)
+    df.to_csv(filename, index=False, sep=';') # Ponto e vírgula para abrir fácil no Excel BR
     return filename
