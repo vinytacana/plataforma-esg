@@ -42,4 +42,15 @@ class Settings:
         "N2O": 0.0009
     }
 
+    # --- NOVOS FATORES: RESÍDUOS (kg CO2e por kg de lixo) ---
+    # Lógica: Aterro gera metano (alto fator). Reciclagem gasta energia mas poupa matéria-prima (baixo fator).
+    FE_RESIDUOS = {
+        "papel_aterro": 1.04,        # Decomposição gera metano
+        "papel_reciclagem": 0.02,     # Transporte apenas
+        "plastico_aterro": 0.04,     # Plástico é inerte (não apodrece, emite pouco no aterro)
+        "plastico_reciclagem": 0.06, # Processo industrial de reciclagem
+        "organico_aterro": 0.58,     # Muita geração de metano
+        "organico_compostagem": 0.10 # Emissão controlada
+    }
+
 settings = Settings()

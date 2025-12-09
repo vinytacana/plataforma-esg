@@ -3,11 +3,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles  # NOVO: Importar isso
 from fastapi.responses import RedirectResponse # NOVO: Para redirecionar a home
-
 from database import engine, Base
 import models.emissoes 
 import models.energia
-from routes import emissoes, energia, relatorios 
+import models.residuos
+from routes import emissoes, energia, relatorios, residuos
 
 Base.metadata.create_all(bind=engine)
 
@@ -21,6 +21,7 @@ app.add_middleware(
 app.include_router(emissoes.router, prefix="/emissoes", tags=["Emissões"])
 app.include_router(energia.router, prefix="/energia", tags=["Energia"])
 app.include_router(relatorios.router, prefix="/relatorios", tags=["Relatórios"])
+app.include_router(residuos.router, prefix="/residuos", tags=["Resíduos"])
 
 # --- NOVO: SERVIR O FRONT-END ---
 # Isso faz com que seus arquivos HTML fiquem acessíveis
