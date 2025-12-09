@@ -16,8 +16,10 @@ class EmissaoOutput(BaseModel):
     escopo2: float
     escopo3: float
     total: float
-
+# --- NOVO: QUÍMICA ---
+    total_co2: float
+    total_ch4: float
+    total_n2o: float
     class Config:
         from_attributes = True # Necessário para ler do SQLAlchemy
 
-# schemas/energia.py similarmente...

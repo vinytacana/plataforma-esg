@@ -20,3 +20,9 @@ class EmissaoModel(Base):
     resultado_escopo2 = Column(Float)
     resultado_escopo3 = Column(Float)
     resultado_total = Column(Float)
+
+# --- NOVO: BREAKDOWN QUÍMICO (kg CO2e) ---
+    # Quanto do total veio de cada gás?
+    total_co2 = Column(Float, default=0.0)
+    total_ch4 = Column(Float, default=0.0)
+    total_n2o = Column(Float, default=0.0)
