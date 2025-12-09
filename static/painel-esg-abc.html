@@ -507,6 +507,11 @@
                     <div class="value">83.4</div>
                     <p class="subtitle">100% de conformidade regulatória</p>
                 </div>
+                <div class="status-card" style="border-left-color: #8D6E5D;">
+                    <h3>Taxa de Reciclagem</h3>
+                    <div class="value" id="reciclagem-display">0%</div>
+                    <p class="subtitle" id="residuos-total-display">0 kg processados</p>
+                </div>
             </section>
 
             <!-- Seção de Detalhes e Atividade -->
@@ -517,6 +522,13 @@
                     <h2>Distribuição de Emissões (GHG Scopes 1, 2 e 3)</h2>
                     <div class="chart-placeholder" style="background-color: white; min-height: unset; padding: 10px;">
                         <canvas id="graficoEmissoes" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card" style="margin-top: 20px;">
+                    <h2>Destinação de Resíduos (Economia Circular)</h2>
+                    <div style="background-color: white; padding: 10px;">
+                        <canvas id="graficoResiduos" style="max-height: 300px;"></canvas>
                     </div>
                 </div>
 
@@ -706,39 +718,230 @@
         document.addEventListener('DOMContentLoaded', carregarDadosReais);
     </script>
 
+
+    <button onclick="abrirCalculadoraResiduos()"
+        style="position: fixed; bottom: 100px; right: 30px; background: #8D6E5D; color: white; border: none; padding: 15px; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 2000;"
+        title="Adicionar Resíduo">
+        ♻️
+    </button>
+
     <button onclick="abrirCalculadora()"
         style="position: fixed; bottom: 30px; right: 30px; background: #4CAF50; color: white; border: none; padding: 20px; border-radius: 50%; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 2000;">
         +
     </button>
 
-    <script>
+<script>
+        // --- 1. INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            configurarSidebar();
+            await carregarDashboardCompleto();
+        });
+
+        async function carregarDashboardCompleto() {
+            console.log("🔄 Atualizando Dashboard...");
+            await carregarDadosEmissoes();
+            await carregarDadosResiduos();
+        }
+
+        // --- 2. EMISSÕES (Gráfico de Rosca) ---
+        async function carregarDadosEmissoes() {
+            try {
+                const response = await fetch('/emissoes/historico');
+                if (!response.ok) return;
+                
+                const dados = await response.json();
+                let s1 = 0, s2 = 0, s3 = 0, total = 0;
+
+                dados.forEach(item => {
+                    s1 += item.escopo1 || 0;
+                    s2 += item.escopo2 || 0;
+                    s3 += item.escopo3 || 0;
+                    total += item.total || 0;
+                });
+
+                const elTotal = document.getElementById('total-emissoes-display');
+                if(elTotal) elTotal.innerText = (total / 1000).toFixed(3) + " t";
+                
+                const elQtd = document.getElementById('qtd-registros-display');
+                if(elQtd) elQtd.innerText = dados.length + " registros";
+
+                atualizarGraficoEmissoes(s1, s2, s3);
+            } catch (error) {
+                console.error("Erro Emissões:", error);
+            }
+        }
+
+        function atualizarGraficoEmissoes(s1, s2, s3) {
+            const canvasId = 'graficoEmissoes';
+            const canvas = document.getElementById(canvasId);
+            if(!canvas) return;
+            
+            // --- CORREÇÃO DEFINITIVA: Verificar instância existente ---
+            const graficoExistente = Chart.getChart(canvasId);
+            if (graficoExistente) {
+                graficoExistente.destroy();
+            }
+
+            new Chart(canvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Escopo 1', 'Escopo 2', 'Escopo 3'],
+                    datasets: [{
+                        data: [s1, s2, s3],
+                        backgroundColor: ['#C62828', '#FF9800', '#4DB6AC'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        // --- 3. RESÍDUOS (Gráfico de Barras) ---
+        async function carregarDadosResiduos() {
+            try {
+                const response = await fetch('/residuos/historico');
+                if (!response.ok) return;
+
+                const dados = await response.json();
+                console.log("Dados de Resíduos:", dados); // Debug
+
+                let totalKg = 0;
+                let pesoReciclado = 0;
+                let pesoAterro = 0;
+                let pesoReciclagemPura = 0;
+                let pesoCompostagem = 0;
+
+                dados.forEach(item => {
+                    const peso = item.peso_kg || 0;
+                    totalKg += peso;
+                    
+                    // Normaliza texto (remove espaços e maiúsculas)
+                    const destino = (item.destino || "").toLowerCase().trim();
+
+                    if (destino === 'reciclagem') {
+                        pesoReciclagemPura += peso;
+                        pesoReciclado += peso;
+                    } else if (destino === 'compostagem') {
+                        pesoCompostagem += peso;
+                        pesoReciclado += peso;
+                    } else {
+                        pesoAterro += peso;
+                    }
+                });
+
+                // Atualiza Texto
+                const taxa = totalKg > 0 ? ((pesoReciclado / totalKg) * 100).toFixed(1) : 0;
+                const elRecic = document.getElementById('reciclagem-display');
+                if(elRecic) elRecic.innerText = taxa + "%";
+                
+                const elResTotal = document.getElementById('residuos-total-display');
+                if(elResTotal) elResTotal.innerText = totalKg + " kg processados";
+
+                atualizarGraficoResiduos(pesoAterro, pesoReciclagemPura, pesoCompostagem);
+
+            } catch (error) {
+                console.error("Erro Resíduos:", error);
+            }
+        }
+
+        function atualizarGraficoResiduos(aterro, reciclagem, compostagem) {
+            const canvasId = 'graficoResiduos';
+            const canvas = document.getElementById(canvasId);
+            if(!canvas) return;
+
+            // --- CORREÇÃO DEFINITIVA ---
+            const graficoExistente = Chart.getChart(canvasId);
+            if (graficoExistente) {
+                graficoExistente.destroy();
+            }
+
+            new Chart(canvas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Aterro', 'Reciclagem', 'Compostagem'],
+                    datasets: [{
+                        label: 'Peso (kg)',
+                        data: [aterro, reciclagem, compostagem],
+                        backgroundColor: ['#5d4037', '#4CAF50', '#8BC34A'],
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        // --- 4. CÁLCULOS (Botões) ---
+        
+        async function abrirCalculadoraResiduos() {
+            let tipo = prompt("Tipo (papel, plastico, organico):", "papel");
+            if(tipo) tipo = tipo.trim();
+            
+            let destino = prompt("Destino (aterro, reciclagem, compostagem):", "reciclagem");
+            if(destino) destino = destino.trim();
+
+            const pesoStr = prompt("Peso (kg):", "100");
+            
+            if (tipo && destino && pesoStr) {
+                const payload = {
+                    tipo: tipo.toLowerCase(),
+                    destino: destino.toLowerCase(),
+                    peso_kg: parseFloat(pesoStr)
+                };
+                await enviarDados('/residuos/calcular', payload);
+            }
+        }
+
         async function abrirCalculadora() {
-            // Isso é uma forma simples. O ideal seria um Modal bonito.
             const gas = prompt("Litros de Gasolina:", "0");
             const diesel = prompt("Litros de Diesel:", "0");
             const energia = prompt("Energia (kWh):", "0");
             const viagens = prompt("Viagens (km):", "0");
 
-            if (gas !== null) { // Se não cancelou
+            if (gas !== null) {
                 const payload = {
-                    "consumo_gasolina_l": parseFloat(gas),
-                    "consumo_diesel_l": parseFloat(diesel),
-                    "consumo_eletricidade_kwh": parseFloat(energia),
-                    "viagens_km": parseFloat(viagens)
+                    consumo_gasolina_l: parseFloat(gas || 0),
+                    consumo_diesel_l: parseFloat(diesel || 0),
+                    consumo_eletricidade_kwh: parseFloat(energia || 0),
+                    viagens_km: parseFloat(viagens || 0)
                 };
+                await enviarDados('/emissoes/calcular', payload);
+            }
+        }
 
-                const resp = await fetch('/emissoes/calcular', {
+        async function enviarDados(url, payload) {
+            try {
+                const resp = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload)
                 });
-
                 if (resp.ok) {
-                    alert("Cálculo realizado e salvo no Blockchain/DB com sucesso!");
-                    location.reload(); // Recarrega para atualizar o número total
+                    alert("Salvo!");
+                    location.reload();
                 } else {
-                    alert("Erro ao calcular.");
+                    alert("Erro no envio. Verifique os dados.");
                 }
+            } catch (e) {
+                console.error(e);
+                alert("Erro de conexão.");
+            }
+        }
+
+        function configurarSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menu-toggle');
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                });
             }
         }
     </script>
