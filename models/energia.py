@@ -1,5 +1,5 @@
 # models/energia.py
-from sqlalchemy import Column, Integer, Float, DateTime
+from sqlalchemy import Column, Integer, Float, DateTime, String
 from database import Base
 from datetime import datetime
 
@@ -8,6 +8,7 @@ class EnergiaModel(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     data_calculo = Column(DateTime, default=datetime.utcnow)
+    tenant_id = Column(String, index=True, nullable=False)
     
     # Inputs
     consumo_total = Column(Float)
