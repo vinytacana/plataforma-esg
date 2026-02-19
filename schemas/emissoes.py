@@ -1,6 +1,6 @@
 # schemas/emissoes.py
 # schemas/emissoes.py
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 
 class EmissaoInput(BaseModel):
@@ -10,6 +10,8 @@ class EmissaoInput(BaseModel):
     viagens_km: float = Field(..., ge=0, description="Km rodados em viagens corporativas")
 
 class EmissaoOutput(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     data_calculo: datetime
     escopo1: float
@@ -20,6 +22,4 @@ class EmissaoOutput(BaseModel):
     total_co2: float
     total_ch4: float
     total_n2o: float
-    class Config:
-        from_attributes = True # Necessário para ler do SQLAlchemy
 
