@@ -1,5 +1,5 @@
 # schemas/energia.py
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 
 class EnergiaInput(BaseModel):
@@ -8,11 +8,10 @@ class EnergiaInput(BaseModel):
     producao_unidades: float = Field(..., ge=0)
 
 class EnergiaOutput(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     data_calculo: datetime
     percentual_renovavel: float
     intensidade: float
     emissoes_totais_tco2e: float # Resultado da equação do manual
-
-    class Config:
-        from_attributes = True
