@@ -4,7 +4,7 @@ from schemas.energia import EnergiaInput
 from models.energia import EnergiaModel
 from config import settings
 
-def calcular_e_salvar_energia(db: Session, dados: EnergiaInput) -> EnergiaModel:
+def calcular_e_salvar_energia(db: Session, dados: EnergiaInput, tenant_id: str) -> EnergiaModel:
     
     # --- 1. Cálculos de Performance Energética ---
     percentual_renovavel = 0.0
@@ -28,6 +28,7 @@ def calcular_e_salvar_energia(db: Session, dados: EnergiaInput) -> EnergiaModel:
 
     # --- 3. Persistência (CORRIGIDO) ---
     db_energia = EnergiaModel(
+        tenant_id=tenant_id,
         consumo_total=dados.consumo_total_kwh,
         consumo_renovavel=dados.consumo_renovavel_kwh,
         producao_unidades=dados.producao_unidades,
