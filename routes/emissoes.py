@@ -5,13 +5,19 @@ from schemas.emissoes import EmissaoInput, EmissaoOutput
 from services.calculo_emissoes import calcular_e_salvar_emissoes
 from database import get_db
 from models.emissoes import EmissaoModel
+from routes.usuarios import get_current_user
+from models.usuarios import UsuarioModel
 
 router = APIRouter()
 
 @router.post("/calcular", response_model=EmissaoOutput)
-def calcular_emissao(dados: EmissaoInput, db: Session = Depends(get_db)):
+def calcular_emissao(
+    dados: EmissaoInput, 
+    db: Session = Depends(get_db),
+    current_user: UsuarioModel = Depends(get_current_user)
+):
   
-    resultado_db = calcular_e_salvar_emissoes(db, dados)
+    resultado_db = calcular_e_salvar_emissoes(db, dados, current_user.tenant_id)
     
     return EmissaoOutput(
         id=resultado_db.id,
@@ -27,8 +33,15 @@ def calcular_emissao(dados: EmissaoInput, db: Session = Depends(get_db)):
     )
 
 @router.get("/historico", response_model=list[EmissaoOutput])
-def listar_historico(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    registros = db.query(EmissaoModel).offset(skip).limit(limit).all()
+def listar_historico(
+    skip: int = 0, 
+    limit: int = 100, 
+    db: Session = Depends(get_db),
+    current_user: UsuarioModel = Depends(get_current_user)
+):
+    registros = db.query(EmissaoModel)\
+        .filter(EmissaoModel.tenant_id == current_user.tenant_id)\
+        .offset(skip).limit(limit).all()
 
     return [
         EmissaoOutput(
