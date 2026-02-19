@@ -1,56 +1,66 @@
 # config.py
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Dict
 
-class Settings:
-    # --- 1. Configuração de Infraestrutura (RECOLOCADO) ---
-    DB_URL = "sqlite:///./esg_app.db"
+class Settings(BaseSettings):
+    # --- 1. Configuração de Infraestrutura ---
+    DB_URL: str = "sqlite:///./esg_app.db"
 
     # --- 2. Potencial de Aquecimento Global (GWP) - IPCC AR6 ---
-    GWP = {
+    GWP: Dict[str, float] = {
         "CO2": 1.0,
-        "CH4": 27.9,  # Metano
-        "N2O": 273.0  # Óxido Nitroso
+        "CH4": 27.9,
+        "N2O": 273.0
     }
 
-    # --- 3. Fatores de Emissão (Vetores FE_{i,g}) ---
-    # Valores hipotéticos baseados no Programa Brasileiro GHG Protocol
-    
-    # Gasolina C (kg/litro)
-    FE_GASOLINA = {
+    # --- 3. Fatores de Emissão ---
+    FE_GASOLINA: Dict[str, float] = {
         "CO2": 2.212,
         "CH4": 0.0005,
         "N2O": 0.0001
     }
     
-    # Diesel (kg/litro)
-    FE_DIESEL = {
+    FE_DIESEL: Dict[str, float] = {
         "CO2": 2.603,
         "CH4": 0.00014,
         "N2O": 0.00005
     }
 
-    # Eletricidade - Grid Médio BR (kg/kWh)
-    FE_ELETRICIDADE_BR = {
+    FE_ELETRICIDADE_BR: Dict[str, float] = {
         "CO2": 0.0450,
         "CH4": 0.00001,
         "N2O": 0.000002
     }
     
-    # Viagens Aéreas (kg/km/passageiro) - Estimativa média
-    FE_VIAGEM = {
+    FE_VIAGEM: Dict[str, float] = {
         "CO2": 0.105,
         "CH4": 0.00001,
         "N2O": 0.0009
     }
 
-    # --- NOVOS FATORES: RESÍDUOS (kg CO2e por kg de lixo) ---
-    # Lógica: Aterro gera metano (alto fator). Reciclagem gasta energia mas poupa matéria-prima (baixo fator).
-    FE_RESIDUOS = {
-        "papel_aterro": 1.04,        # Decomposição gera metano
-        "papel_reciclagem": 0.02,     # Transporte apenas
-        "plastico_aterro": 0.04,     # Plástico é inerte (não apodrece, emite pouco no aterro)
-        "plastico_reciclagem": 0.06, # Processo industrial de reciclagem
-        "organico_aterro": 0.58,     # Muita geração de metano
-        "organico_compostagem": 0.10 # Emissão controlada
+    FE_RESIDUOS: Dict[str, float] = {
+        "papel_aterro": 1.04,
+        "papel_reciclagem": 0.02,
+        "plastico_aterro": 0.04,
+        "plastico_reciclagem": 0.06,
+        "organico_aterro": 0.58,
+        "organico_compostagem": 0.10
     }
+
+    # --- 4. Mapeamento de Atividades para Escopos e Fatores ---
+    # Permite refatorar os serviços para serem genéricos
+    EMISSION_MAPPING: Dict[str, Dict] = {
+        "consumo_gasolina_l": {"fator": "FE_GASOLINA", "escopo": 1},
+        "consumo_diesel_l": {"fator": "FE_DIESEL", "escopo": 1},
+        "consumo_eletricidade_kwh": {"fator": "FE_ELETRICIDADE_BR", "escopo": 2},
+        "viagens_km": {"fator": "FE_VIAGEM", "escopo": 3}
+    }
+
+    # --- 5. Segurança e Autenticação ---
+    SECRET_KEY: str = "super-secret-key-mudar-em-producao"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 settings = Settings()
