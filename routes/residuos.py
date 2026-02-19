@@ -5,11 +5,17 @@ from database import get_db
 from schemas.residuos import ResiduoInput, ResiduoOutput
 from services.calculo_residuos import calcular_residuos
 from models.residuos import ResiduoModel
+from routes.usuarios import get_current_user
+from models.usuarios import UsuarioModel
 
 router = APIRouter()
 
 @router.post("/calcular", response_model=ResiduoOutput)
-def calcular(dados: ResiduoInput, db: Session = Depends(get_db)):
+def calcular(
+    dados: ResiduoInput, 
+    db: Session = Depends(get_db),
+    current_user: UsuarioModel = Depends(get_current_user)
+):
     """
     Calcula emissões de resíduos baseado no material e destinação final.
     """
@@ -17,7 +23,7 @@ def calcular(dados: ResiduoInput, db: Session = Depends(get_db)):
     if dados.tipo == 'organico' and dados.destino == 'reciclagem':
         raise HTTPException(status_code=400, detail="Orgânico não pode ser reciclado, apenas compostado ou aterro.")
 
-    resultado = calcular_residuos(db, dados)
+    resultado = calcular_residuos(db, dados, current_user.tenant_id)
     
     return ResiduoOutput(
         id=resultado.id,
@@ -29,6 +35,9 @@ def calcular(dados: ResiduoInput, db: Session = Depends(get_db)):
     )
 
 @router.get("/historico", response_model=list[ResiduoOutput])
-def listar_residuos(db: Session = Depends(get_db)):
+def listar_residuos(
+    db: Session = Depends(get_db),
+    current_user: UsuarioModel = Depends(get_current_user)
+):
 
-    return db.query(ResiduoModel).all()
+    return db.query(ResiduoModel).filter(ResiduoModel.tenant_id == current_user.tenant_id).all()
