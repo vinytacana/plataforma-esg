@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Casca ESG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--color-brown-light);
+        }
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-container img { height: 40px; margin-bottom: 20px; }
+        .login-container h1 { margin-bottom: 30px; color: var(--color-brown-dark); }
+        .error-message { color: #C62828; margin-bottom: 15px; display: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="casca2.png" alt="Logo">
+        <h1>Login Plataforma</h1>
+        <div id="error" class="error-message">E-mail ou senha incorretos.</div>
+        <form id="loginForm">
+            <div class="form-group" style="text-align: left;">
+                <label>E-mail</label>
+                <input type="email" id="email" required placeholder="seu@email.com">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Senha</label>
+                <input type="password" id="senha" required placeholder="******">
+            </div>
+            <button type="submit" class="btn-save">Entrar</button>
+        </form>
+        <p style="margin-top: 20px; font-size: 14px; color: var(--color-text-light);">
+            Ainda não tem conta? <a href="cadastro.html" style="color: var(--color-brown-medium);">Cadastre sua empresa</a>
+        </p>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('senha').value;
+            const errorEl = document.getElementById('error');
+
+            const formData = new FormData();
+            formData.append('username', email);
+            formData.append('password', password);
+
+            try {
+                const response = await fetch('/usuarios/login', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('esg_token', data.access_token);
+                    window.location.href = 'painel-esg-abc.html';
+                } else {
+                    errorEl.style.display = 'block';
+                }
+            } catch (err) {
+                errorEl.style.display = 'block';
+                errorEl.innerText = "Erro de conexão com o servidor.";
+            }
+        });
+    </script>
+</body>
+</html>

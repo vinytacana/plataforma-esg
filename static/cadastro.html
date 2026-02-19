@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Casca ESG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        body {
+            display: flex; align-items: center; justify-content: center;
+            background-color: var(--color-brown-light); min-height: 100vh;
+        }
+        .register-container {
+            background: white; padding: 40px; border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%; max-width: 500px; text-align: center;
+        }
+        .register-container h1 { margin-bottom: 20px; color: var(--color-brown-dark); }
+        .form-group { text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <img src="casca2.png" alt="Logo" style="height: 40px; margin-bottom: 20px;">
+        <h1>Criar Conta Enterprise</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Nome da Empresa</label>
+                <input type="text" id="nome_empresa" required placeholder="Ex: ABC Indústria LTDA">
+            </div>
+            <div class="form-group">
+                <label>E-mail Corporativo</label>
+                <input type="email" id="email" required placeholder="admin@empresa.com">
+            </div>
+            <div class="form-group">
+                <label>ID da Empresa (Tenant ID)</label>
+                <input type="text" id="tenant_id" required placeholder="ex: abc-industria">
+                <small style="color: #666;">Identificador único para seus dados.</small>
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="senha" required placeholder="******">
+            </div>
+            <button type="submit" class="btn-save" style="margin-top: 20px;">Finalizar Cadastro</button>
+        </form>
+        <p style="margin-top: 20px; font-size: 14px;">
+            Já tem conta? <a href="login.html" style="color: var(--color-brown-medium);">Faça Login</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                nome_empresa: document.getElementById('nome_empresa').value,
+                email: document.getElementById('email').value,
+                tenant_id: document.getElementById('tenant_id').value,
+                senha: document.getElementById('senha').value
+            };
+
+            try {
+                const response = await fetch('/usuarios/registrar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert("Cadastro realizado com sucesso! Agora faça login.");
+                    window.location.href = 'login.html';
+                } else {
+                    const err = await response.json();
+                    alert("Erro: " + (err.detail || "Falha no cadastro"));
+                }
+            } catch (err) { alert("Erro de conexão."); }
+        });
+    </script>
+</body>
+</html>
