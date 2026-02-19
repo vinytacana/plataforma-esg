@@ -8,6 +8,7 @@ class EmissaoModel(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     data_calculo = Column(DateTime, default=datetime.utcnow)
+    tenant_id = Column(String, index=True, nullable=False)
     
     # Inputs
     consumo_gasolina_l = Column(Float)
