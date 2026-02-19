@@ -4,7 +4,7 @@ from schemas.residuos import ResiduoInput
 from models.residuos import ResiduoModel
 from config import settings
 
-def calcular_residuos(db: Session, dados: ResiduoInput) -> ResiduoModel:
+def calcular_residuos(db: Session, dados: ResiduoInput, tenant_id: str) -> ResiduoModel:
     # 1. Monta a chave para buscar no config (ex: "papel_aterro")
     chave_fator = f"{dados.tipo}_{dados.destino}"
     
@@ -16,6 +16,7 @@ def calcular_residuos(db: Session, dados: ResiduoInput) -> ResiduoModel:
 
     # 4. Salva no Banco
     db_obj = ResiduoModel(
+        tenant_id=tenant_id,
         tipo=dados.tipo,
         destino=dados.destino,
         peso_kg=dados.peso_kg,
